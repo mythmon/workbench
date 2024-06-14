@@ -16,11 +16,12 @@ export default {
   //   }
   // ],
 
-  // Content to add to the head of the page, e.g. for a favicon:
-  head: '<link rel="icon" href="observable.png" type="image/png" sizes="32x32">',
-
   // The path to the source root.
   root: "src",
+
+  header: `<div style="border-bottom: 1px solid grey; display: flex; flex-direction: row-reverse">
+    <div><a href="https://github.com/mythmon/workbench">GitHub</a></div>
+  </div>`,
 
   // Some additional configuration options and their defaults:
   // theme: "default", // try "light", "dark", "slate", etc.
