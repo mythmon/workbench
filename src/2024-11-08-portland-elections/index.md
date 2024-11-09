@@ -12,7 +12,7 @@ In the election for ${data.config.office}, a total of ${totalVotesCast.toLocaleS
 
 ```js
 const raceChoice = view(Inputs.select(["Mayor", "District 1", "District 2", "District 3", "District 4"]));
-const resultsChoice = view(Inputs.select(["Results 4", "Results 3", "Results 2", "Results 1"]));
+const resultsChoice = view(Inputs.select(["Results 5", "Results 4", "Results 3", "Results 2", "Results 1"]));
 ```
 
 ```js
@@ -35,22 +35,27 @@ let datas = new Map([
   ["District 1, Results 2", FileAttachment("./data/district1/round2.json")],
   ["District 1, Results 3", FileAttachment("./data/district1/round3.json")],
   ["District 1, Results 4", FileAttachment("./data/district1/round4.json")],
+  ["District 1, Results 5", FileAttachment("./data/district1/round5.json")],
   ["District 2, Results 1", FileAttachment("./data/district2/round1.json")],
   ["District 2, Results 2", FileAttachment("./data/district2/round2.json")],
   ["District 2, Results 3", FileAttachment("./data/district2/round3.json")],
   ["District 2, Results 4", FileAttachment("./data/district2/round4.json")],
+  ["District 2, Results 5", FileAttachment("./data/district2/round5.json")],
   ["District 3, Results 1", FileAttachment("./data/district3/round1.json")],
   ["District 3, Results 2", FileAttachment("./data/district3/round2.json")],
   ["District 3, Results 3", FileAttachment("./data/district3/round3.json")],
   ["District 3, Results 4", FileAttachment("./data/district3/round4.json")],
+  ["District 3, Results 5", FileAttachment("./data/district3/round5.json")],
   ["District 4, Results 1", FileAttachment("./data/district4/round1.json")],
   ["District 4, Results 2", FileAttachment("./data/district4/round2.json")],
   ["District 4, Results 3", FileAttachment("./data/district4/round3.json")],
   ["District 4, Results 4", FileAttachment("./data/district4/round4.json")],
+  ["District 4, Results 5", FileAttachment("./data/district4/round5.json")],
   ["Mayor, Results 1", FileAttachment("./data/mayor/round1.json")],
   ["Mayor, Results 2", FileAttachment("./data/mayor/round2.json")],
   ["Mayor, Results 3", FileAttachment("./data/mayor/round3.json")],
   ["Mayor, Results 4", FileAttachment("./data/mayor/round4.json")],
+  ["Mayor, Results 5", FileAttachment("./data/mayor/round5.json")],
 ]);
 ```
 
