@@ -72,6 +72,14 @@ const color = d3
 ```
 
 ```js
+const won_in = new Map();
+for (const {round, tally} of data.results)
+  for (const [candidate, count] of Object.entries(tally))
+    if (count > data.config.threshold && !won_in.has(candidate))
+      won_in.set(candidate, round);
+```
+
+```js
 const sankeyData = (() => {
   const nodesMap = new Map([["Votes", {name: "Votes", category: "Votes"}]]);
   const links = [];
@@ -125,7 +133,7 @@ function drawSankey(data, w, h) {
     .nodePadding(20)
     .extent([[margin.left, margin.top], [margin.left + width, margin.top + height]])
     .nodeAlign(d3Sankey.sankeyLeft)
-    .nodeSort((a, b) => a.value - b.value);
+    .nodeSort((a, b) => d3.descending(won_in.get(a.category), won_in.get(b.category)) || d3.ascending(a.value, b.value));
 
   const svg = htl.html`<svg
     width="${width + margin.left + margin.right}"
