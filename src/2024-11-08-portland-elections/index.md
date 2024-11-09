@@ -97,15 +97,15 @@ const sankeyData = (() => {
       }
     }
 
-    if (idx < data.results.length - 1) {
       for (const [candidate, count] of Object.entries(step.tally)) {
         if (eliminated.has(candidate)) continue;
         const source = `${candidate} (${step.round})`;
         const target = `${candidate} (${step.round + 1})`;
-        links.push({source, target, value: count});
         nodesMap.set(source, {name: source, category: candidate});
-        nodesMap.set(target, {name: target, category: candidate});
-      }
+        if (idx < data.results.length - 1) {
+          links.push({source, target, value: count});
+          nodesMap.set(target, {name: target, category: candidate});
+        }
     }
   }
 
