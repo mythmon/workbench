@@ -131,7 +131,7 @@ function drawSankey(data, w, h) {
   const sankey = d3Sankey.sankey()
     .nodeId(d => d.name)
     .nodeWidth(10)
-    .nodePadding(20)
+    .nodePadding(15)
     .extent([[margin.left, margin.top], [margin.left + width, margin.top + height]])
     .nodeAlign(d3Sankey.sankeyLeft)
     .nodeSort((a, b) => d3.descending(wonIn.get(a.category), wonIn.get(b.category)) || d3.ascending(a.value, b.value));
@@ -207,6 +207,7 @@ function drawSankey(data, w, h) {
     .attr("x", d => d.x0 < width / 2 ? d.x1 + 6 : d.x0 - 6)
     .attr("y", d => (d.y1 + d.y0) / 2)
     .attr("dy", "0.35em")
+    .attr("font-size", "1.3em")
     .attr("text-anchor", d => d.x0 < width / 2 ? "start" : "end")
     .attr("fill", "currentcolor")
     .text(d => `${d.name.replace(/\s*\(\d+\)$/, "")} (${percent(d.value)})`);
