@@ -61,7 +61,14 @@ let data = dataChoice?.json()
 
 ```js
 const margin = {top: 10, right: 10, bottom: 20, left: 10};
-const color = d3.scaleOrdinal(d3.schemeCategory10);
+const color = d3
+  .scaleOrdinal()
+  .domain(
+    Object.entries(data.results[0].tally)
+      .sort((a, b) => b[1] - a[1])
+      .map((d) => d[0])
+  )
+  .range(d3.schemeObservable10);
 ```
 
 ```js
@@ -132,9 +139,6 @@ function drawSankey(data, w, h) {
     nodes: sankeyData.nodes.map(d => ({...d})),
     links: sankeyData.links.map(d => ({...d})),
   });
-
-  // Defines a color scale.
-  const color = d3.scaleOrdinal(d3.schemeCategory10);
 
   // Creates the rects that represent the nodes.
   const rect = d3.select(svg)
