@@ -124,6 +124,7 @@ function drawSankey(data, w, h) {
     .nodeWidth(10)
     .nodePadding(20)
     .extent([[margin.left, margin.top], [margin.left + width, margin.top + height]])
+    .nodeAlign(d3Sankey.sankeyLeft)
     .nodeSort((a, b) => a.value - b.value);
 
   const svg = htl.html`<svg
