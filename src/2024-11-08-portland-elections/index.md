@@ -20,7 +20,7 @@ const dataChoice = datas.get(`${raceChoice}, ${resultsChoice}`);
 ```
 
 <div style="overflow-x: scroll; overflow-y: hidden;">
-  ${htl.html`<div style=${`width: ${data.results.length * 250}px; height: 1500px`}>
+  ${htl.html`<div style=${`width: ${data.results.length * 160}px; height: 800px`}>
     ${resize((width, height) => drawSankey(data, width, height))}
   </div>`}
 </div>
@@ -122,6 +122,7 @@ function drawSankey(data, w, h) {
   const svg = htl.html`<svg
     width="${width + margin.left + margin.right}"
     height="${height + margin.top + margin.bottom}"
+    style="font-family: var(--sans-serif); font-size: 0.6em;"
   >
   </svg>`;
 
