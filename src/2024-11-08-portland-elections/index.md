@@ -20,7 +20,7 @@ const dataChoice = datas.get(`${raceChoice}, ${resultsChoice}`);
 ```
 
 <div style="overflow-x: scroll; overflow-y: hidden;">
-  ${htl.html`<div style=${`width: ${data.results.length * 250}px; height: 1500px`}>
+  ${htl.html`<div style=${`width: ${data.results.length * 160}px; height: 800px`}>
     ${resize((width, height) => drawSankey(data, width, height))}
   </div>`}
 </div>
@@ -61,7 +61,23 @@ let data = dataChoice?.json()
 
 ```js
 const margin = {top: 10, right: 10, bottom: 20, left: 10};
-const color = d3.scaleOrdinal(d3.schemeCategory10);
+const color = d3
+  .scaleOrdinal()
+  .domain(
+    Object.entries(data.results[0].tally)
+      .sort((a, b) => b[1] - a[1])
+      .map((d) => d[0])
+  )
+  .range(d3.schemeObservable10);
+```
+
+```js
+const wonIn = new Map();
+for (const {round, tallyResults} of data.results) {
+  for (const d of tallyResults) {
+    if (d.elected) wonIn.set(d.elected, round);
+  }
+}
 ```
 
 ```js
@@ -90,15 +106,15 @@ const sankeyData = (() => {
       }
     }
 
-    if (idx < data.results.length - 1) {
       for (const [candidate, count] of Object.entries(step.tally)) {
         if (eliminated.has(candidate)) continue;
         const source = `${candidate} (${step.round})`;
         const target = `${candidate} (${step.round + 1})`;
-        links.push({source, target, value: count});
         nodesMap.set(source, {name: source, category: candidate});
-        nodesMap.set(target, {name: target, category: candidate});
-      }
+        if (idx < data.results.length - 1) {
+          links.push({source, target, value: count});
+          nodesMap.set(target, {name: target, category: candidate});
+        }
     }
   }
 
@@ -115,13 +131,15 @@ function drawSankey(data, w, h) {
   const sankey = d3Sankey.sankey()
     .nodeId(d => d.name)
     .nodeWidth(10)
-    .nodePadding(20)
+    .nodePadding(15)
     .extent([[margin.left, margin.top], [margin.left + width, margin.top + height]])
-    .nodeSort((a, b) => a.value - b.value);
+    .nodeAlign(d3Sankey.sankeyLeft)
+    .nodeSort((a, b) => d3.descending(wonIn.get(a.category), wonIn.get(b.category)) || d3.ascending(a.value, b.value));
 
   const svg = htl.html`<svg
     width="${width + margin.left + margin.right}"
     height="${height + margin.top + margin.bottom}"
+    style="font-family: var(--sans-serif); font-size: 0.6em;"
   >
   </svg>`;
 
@@ -131,9 +149,6 @@ function drawSankey(data, w, h) {
     nodes: sankeyData.nodes.map(d => ({...d})),
     links: sankeyData.links.map(d => ({...d})),
   });
-
-  // Defines a color scale.
-  const color = d3.scaleOrdinal(d3.schemeCategory10);
 
   // Creates the rects that represent the nodes.
   const rect = d3.select(svg)
@@ -156,11 +171,11 @@ function drawSankey(data, w, h) {
   // Creates the paths that represent the links.
   const link = d3.select(svg).append("g")
     .attr("fill", "none")
-    .attr("stroke-opacity", 0.5)
     .selectAll()
     .data(links)
     .join("g")
-    .style("mix-blend-mode", "multiply");
+    .attr("stroke-opacity", d => d.source.layer >= wonIn.get(d.source.category) && d.source.category === d.target.category ? 1 : 0.5)
+    .style("mix-blend-mode", dark ? "screen" : "multiply");
 
   link.append("path")
       .attr("d", d3Sankey.sankeyLinkHorizontal())
@@ -192,6 +207,7 @@ function drawSankey(data, w, h) {
     .attr("x", d => d.x0 < width / 2 ? d.x1 + 6 : d.x0 - 6)
     .attr("y", d => (d.y1 + d.y0) / 2)
     .attr("dy", "0.35em")
+    .attr("font-size", "1.3em")
     .attr("text-anchor", d => d.x0 < width / 2 ? "start" : "end")
     .attr("fill", "currentcolor")
     .text(d => `${d.name.replace(/\s*\(\d+\)$/, "")} (${percent(d.value)})`);
