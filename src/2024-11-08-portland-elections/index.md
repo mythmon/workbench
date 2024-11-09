@@ -170,10 +170,10 @@ function drawSankey(data, w, h) {
   // Creates the paths that represent the links.
   const link = d3.select(svg).append("g")
     .attr("fill", "none")
-    .attr("stroke-opacity", 0.5)
     .selectAll()
     .data(links)
     .join("g")
+    .attr("stroke-opacity", d => d.source.layer >= won_in.get(d.source.category) && d.source.category === d.target.category ? 1 : 0.5)
     .style("mix-blend-mode", dark ? "screen" : "multiply");
 
   link.append("path")
