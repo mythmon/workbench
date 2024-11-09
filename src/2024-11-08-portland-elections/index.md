@@ -146,7 +146,8 @@ function drawSankey(data, w, h) {
     .attr("y", d => d.y0)
     .attr("height", d => d.y1 - d.y0)
     .attr("width", d => d.x1 - d.x0)
-    .attr("fill", d => color(d.category));
+    .attr("fill", d => color(d.category))
+    .attr("stroke", "currentcolor");
 
   // Adds a title on the nodes.
   rect.append("title")
@@ -192,6 +193,7 @@ function drawSankey(data, w, h) {
     .attr("y", d => (d.y1 + d.y0) / 2)
     .attr("dy", "0.35em")
     .attr("text-anchor", d => d.x0 < width / 2 ? "start" : "end")
+    .attr("fill", "currentcolor")
     .text(d => `${d.name.replace(/\s*\(\d+\)$/, "")} (${percent(d.value)})`);
 
   return svg;
