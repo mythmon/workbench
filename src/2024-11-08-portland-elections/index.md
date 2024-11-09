@@ -72,11 +72,12 @@ const color = d3
 ```
 
 ```js
-const won_in = new Map();
-for (const {round, tally} of data.results)
-  for (const [candidate, count] of Object.entries(tally))
-    if (count > data.config.threshold && !won_in.has(candidate))
-      won_in.set(candidate, round);
+const wonIn = new Map();
+for (const {round, tallyResults} of data.results) {
+  for (const d of tallyResults) {
+    if (d.elected) wonIn.set(d.elected, round);
+  }
+}
 ```
 
 ```js
@@ -133,7 +134,7 @@ function drawSankey(data, w, h) {
     .nodePadding(20)
     .extent([[margin.left, margin.top], [margin.left + width, margin.top + height]])
     .nodeAlign(d3Sankey.sankeyLeft)
-    .nodeSort((a, b) => d3.descending(won_in.get(a.category), won_in.get(b.category)) || d3.ascending(a.value, b.value));
+    .nodeSort((a, b) => d3.descending(wonIn.get(a.category), wonIn.get(b.category)) || d3.ascending(a.value, b.value));
 
   const svg = htl.html`<svg
     width="${width + margin.left + margin.right}"
@@ -173,7 +174,7 @@ function drawSankey(data, w, h) {
     .selectAll()
     .data(links)
     .join("g")
-    .attr("stroke-opacity", d => d.source.layer >= won_in.get(d.source.category) && d.source.category === d.target.category ? 1 : 0.5)
+    .attr("stroke-opacity", d => d.source.layer >= wonIn.get(d.source.category) && d.source.category === d.target.category ? 1 : 0.5)
     .style("mix-blend-mode", dark ? "screen" : "multiply");
 
   link.append("path")
