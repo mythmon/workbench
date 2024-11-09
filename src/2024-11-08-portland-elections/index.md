@@ -165,7 +165,7 @@ function drawSankey(data, w, h) {
     .selectAll()
     .data(links)
     .join("g")
-    .style("mix-blend-mode", "multiply");
+    .style("mix-blend-mode", dark ? "screen" : "multiply");
 
   link.append("path")
       .attr("d", d3Sankey.sankeyLinkHorizontal())
