@@ -4,11 +4,63 @@ theme: wide
 
 # Elections
 
-In the election for ${data.config.office}, a total of ${totalVotesCast.toLocaleString()} votes were cast.
+How did the 2024 ranked choice voting elections in Portland go? Data is based on the official counts released at https://rcvresults.multco.us/ and includes provisional data that is not finalized.
 
-<ul>
-  ${elected.map(({name, round}) => htl.html`<li>In round ${round + 1}, ${name} was elected</li>`)}
-</ul>
+## Vote counts
+
+${Plot.plot({
+  x: {type: "time"},
+  y: {tickFormat: "s"},
+  color: {
+    legend: true,
+    domain: ["mayor", "district 1", "district 2", "district 3", "district 4"],
+    range: ["currentcolor", ...d3.schemeCategory10],
+  },
+  marks: [
+    Plot.areaY(districtSummary, {
+      x: "timestamp",
+      y: "totalVotes",
+      fill: "office",
+    }),
+    Plot.ruleX(mayorSummary, {
+      x: "timestamp",
+      stroke: dark ? "#1e1e1e" : "white",
+    }),
+    Plot.lineY(mayorSummary, {
+      x: "timestamp",
+      y: "totalVotes",
+      strokeDasharray: [7, 7],
+    }),
+    Plot.dot(mayorSummary.filter(d => d.resultsNum === maxResultsNum), {
+      x: "timestamp",
+      y: "totalVotes",
+      tip: true,
+    }),
+    Plot.text(districtSummary.filter(d => d.resultsNum === maxResultsNum), Plot.stackY1({
+      x: "timestamp",
+      y: "totalVotes",
+      text: "office",
+      textAnchor: "end",
+      dx: -5,
+      dy: -8,
+    })),
+    Plot.text(mayorSummary.filter(d => d.resultsNum === maxResultsNum), {
+      x: "timestamp",
+      y: "totalVotes",
+      text: "office",
+      textAnchor: "end",
+      dx: -5,
+      dy: 16
+    }),
+    Plot.gridY(),
+  ]
+})}
+
+## RCV Results
+
+In the election for ${data.config.office}, as of ${tallyDate.toLocaleString()} a total of ${totalVotesCast.toLocaleString()} votes were cast.
+
+<ul>${elected.map(({name, round}) => htl.html`<li>In round ${round + 1}, ${name} was elected.</li>`)}</ul>
 
 ```js
 const raceChoice = view(Inputs.select(["Mayor", "District 1", "District 2", "District 3", "District 4"]));
@@ -30,33 +82,34 @@ import * as d3Sankey from "npm:d3-sankey@^0.12";
 ```
 
 ```js
-let datas = new Map([
-  ["District 1, Results 1", FileAttachment("./data/district1/round1.json")],
-  ["District 1, Results 2", FileAttachment("./data/district1/round2.json")],
-  ["District 1, Results 3", FileAttachment("./data/district1/round3.json")],
-  ["District 1, Results 4", FileAttachment("./data/district1/round4.json")],
-  ["District 1, Results 5", FileAttachment("./data/district1/round5.json")],
-  ["District 2, Results 1", FileAttachment("./data/district2/round1.json")],
-  ["District 2, Results 2", FileAttachment("./data/district2/round2.json")],
-  ["District 2, Results 3", FileAttachment("./data/district2/round3.json")],
-  ["District 2, Results 4", FileAttachment("./data/district2/round4.json")],
-  ["District 2, Results 5", FileAttachment("./data/district2/round5.json")],
-  ["District 3, Results 1", FileAttachment("./data/district3/round1.json")],
-  ["District 3, Results 2", FileAttachment("./data/district3/round2.json")],
-  ["District 3, Results 3", FileAttachment("./data/district3/round3.json")],
-  ["District 3, Results 4", FileAttachment("./data/district3/round4.json")],
-  ["District 3, Results 5", FileAttachment("./data/district3/round5.json")],
-  ["District 4, Results 1", FileAttachment("./data/district4/round1.json")],
-  ["District 4, Results 2", FileAttachment("./data/district4/round2.json")],
-  ["District 4, Results 3", FileAttachment("./data/district4/round3.json")],
-  ["District 4, Results 4", FileAttachment("./data/district4/round4.json")],
-  ["District 4, Results 5", FileAttachment("./data/district4/round5.json")],
-  ["Mayor, Results 1", FileAttachment("./data/mayor/round1.json")],
-  ["Mayor, Results 2", FileAttachment("./data/mayor/round2.json")],
-  ["Mayor, Results 3", FileAttachment("./data/mayor/round3.json")],
-  ["Mayor, Results 4", FileAttachment("./data/mayor/round4.json")],
-  ["Mayor, Results 5", FileAttachment("./data/mayor/round5.json")],
+const datas = new Map([
+  ["District 1, Results 1", FileAttachment("./all-results/district_1/results_1.json")],
+  ["District 1, Results 2", FileAttachment("./all-results/district_1/results_2.json")],
+  ["District 1, Results 3", FileAttachment("./all-results/district_1/results_3.json")],
+  ["District 1, Results 4", FileAttachment("./all-results/district_1/results_4.json")],
+  ["District 1, Results 5", FileAttachment("./all-results/district_1/results_5.json")],
+  ["District 2, Results 1", FileAttachment("./all-results/district_2/results_1.json")],
+  ["District 2, Results 2", FileAttachment("./all-results/district_2/results_2.json")],
+  ["District 2, Results 3", FileAttachment("./all-results/district_2/results_3.json")],
+  ["District 2, Results 4", FileAttachment("./all-results/district_2/results_4.json")],
+  ["District 2, Results 5", FileAttachment("./all-results/district_2/results_5.json")],
+  ["District 3, Results 1", FileAttachment("./all-results/district_3/results_1.json")],
+  ["District 3, Results 2", FileAttachment("./all-results/district_3/results_2.json")],
+  ["District 3, Results 3", FileAttachment("./all-results/district_3/results_3.json")],
+  ["District 3, Results 4", FileAttachment("./all-results/district_3/results_4.json")],
+  ["District 3, Results 5", FileAttachment("./all-results/district_3/results_5.json")],
+  ["District 4, Results 1", FileAttachment("./all-results/district_4/results_1.json")],
+  ["District 4, Results 2", FileAttachment("./all-results/district_4/results_2.json")],
+  ["District 4, Results 3", FileAttachment("./all-results/district_4/results_3.json")],
+  ["District 4, Results 4", FileAttachment("./all-results/district_4/results_4.json")],
+  ["District 4, Results 5", FileAttachment("./all-results/district_4/results_5.json")],
+  ["Mayor, Results 1", FileAttachment("./all-results/mayor/results_1.json")],
+  ["Mayor, Results 2", FileAttachment("./all-results/mayor/results_2.json")],
+  ["Mayor, Results 3", FileAttachment("./all-results/mayor/results_3.json")],
+  ["Mayor, Results 4", FileAttachment("./all-results/mayor/results_4.json")],
+  ["Mayor, Results 5", FileAttachment("./all-results/mayor/results_5.json")],
 ]);
+const summary = FileAttachment("./all-results/summary.json").json();
 ```
 
 ```js
@@ -241,4 +294,22 @@ const elected = data.results.reduce((acc, result, idx) => {
 function percent(value) {
   return (Math.round(value / totalVotesCast * 1000) / 10).toFixed(1) + "%";
 }
+```
+
+```js
+const tallyDate = (() => {
+  const dateStr = data.config.contest
+    .replace(/district_\d/i, "")
+    .replace(/^[^\d]+/i, "");
+  return d3.timeParse("%Y_%m_%d_%H_%M_%S")(dateStr);
+})();
+```
+
+```js
+const mayorSummary = summary.filter(d => d.office === "mayor");
+const districtSummary = summary.filter(d => d.office !== "mayor");
+```
+
+```js
+const maxResultsNum = d3.max(summary, d => d.resultsNum);
 ```
